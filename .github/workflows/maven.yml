@@ -4,32 +4,30 @@ on: [push, pull_request]
 
 jobs:
   build:
-    # Cấu hình Matrix: Chạy song song trên 3 hệ điều hành
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-    # Lấy code về
-    - uses: actions/checkout@v3
+    # 1. Lấy code về (Đã nâng cấp lên v4)
+    - uses: actions/checkout@v4
     
-    # Cài đặt JDK 17 và bật Cache
+    # 2. Cài đặt JDK 17 và bật Cache (Đã nâng cấp lên v4)
     - name: Set up JDK 17 with Cache
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: 'maven' # Dòng này giúp tăng tốc độ build cho các lần sau
+        cache: 'maven'
         
-    # Chạy lệnh build project
+    # 3. Chạy lệnh build project
     - name: Build with Maven
       run: mvn package
       
-    # Lưu lại file .jar để tải về
+    # 4. Lưu lại file .jar (SỬA LỖI Ở ĐÂY: Đã nâng cấp lên v4)
     - name: Upload JAR
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        # Thêm đuôi ${{ matrix.os }} để tải về 3 file phân biệt cho 3 HĐH
         name: my-app-jar-${{ matrix.os }} 
         path: target/*.jar
