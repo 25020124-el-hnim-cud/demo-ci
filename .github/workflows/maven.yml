@@ -1,0 +1,35 @@
+name: Java CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    # Cấu hình Matrix: Chạy song song trên 3 hệ điều hành
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    # Lấy code về
+    - uses: actions/checkout@v3
+    
+    # Cài đặt JDK 17 và bật Cache
+    - name: Set up JDK 17 with Cache
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven' # Dòng này giúp tăng tốc độ build cho các lần sau
+        
+    # Chạy lệnh build project
+    - name: Build with Maven
+      run: mvn package
+      
+    # Lưu lại file .jar để tải về
+    - name: Upload JAR
+      uses: actions/upload-artifact@v3
+      with:
+        # Thêm đuôi ${{ matrix.os }} để tải về 3 file phân biệt cho 3 HĐH
+        name: my-app-jar-${{ matrix.os }} 
+        path: target/*.jar
